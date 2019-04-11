@@ -41,8 +41,7 @@ const employeeSchema = new Schema({
   departments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Department',
-      required: true,
+      ref: 'Department'
     },
   ],
   user_create: {

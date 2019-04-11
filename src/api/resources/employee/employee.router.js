@@ -11,3 +11,7 @@ employeeRouter
   .route('/')
   .post(rootPolicy, employeeController.create)
   .get(passport.authenticate('jwt', { session: false }), employeeController.findAll);
+
+employeeRouter
+  .route('/:id')
+  .put(rootPolicy, employeeController.update);

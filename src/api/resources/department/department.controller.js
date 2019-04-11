@@ -7,7 +7,8 @@ export default {
       const schema = Joi.object().keys({
         title: Joi.string().required(),
         description: Joi.string().required(),
-        location: Joi.string().required()
+        location: Joi.string().required(),
+        employees: Joi.array().items()
       });
       const { value, error } = Joi.validate(req.body, schema);
       if (error && error.details) {
@@ -16,7 +17,8 @@ export default {
       const department = await Department.create({
         title: value.title,
         description: value.description,
-        location: value.location
+        location: value.location,
+        employees: value.employe
       });
       return res.json(department);
     } catch (err) {
@@ -35,8 +37,8 @@ export default {
           select: 'fullname email phone',
         },
       };
-      const songs = await Song.paginate({}, options);
-      return res.json(songs);
+      const departments = await Department.paginate({}, options);
+      return res.json(departments);
     } catch (err) {
       console.error(err);
       return res.status(500).send(err);
@@ -46,8 +48,8 @@ export default {
   async findOne(req, res) {
     try {
       const { id } = req.params;
-      const department = await Department.findById(id);
-      //populate('', 'firstName lastName');
+      const department = await Department.findById(id).populate('employees', 'id fullname');
+
       if (!department) {
         return res.status(404).json({ err: 'could not find department' });
       }
@@ -76,7 +78,8 @@ export default {
       const schema = Joi.object().keys({
         title: Joi.string().optional(),
         description: Joi.string().optional(),
-        location: Joi.string().optional()
+        location: Joi.string().optional(),
+        employees: Joi.array().items().optional(),
       });
       const { value, error } = Joi.validate(req.body, schema);
       if (error && error.details) {

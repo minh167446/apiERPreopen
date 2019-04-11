@@ -14,12 +14,11 @@ const departmentSchema = new Schema({
   location: {
       type: String,
       required: [true, 'department must have location'],
-    }
-  // employees: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Employee',
-  //   required: true,
-  // }  
+    },
+  employees: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employee'
+  }]
 });
 departmentSchema.plugin(mongoosePaginate);
 export default mongoose.model('Department', departmentSchema);
