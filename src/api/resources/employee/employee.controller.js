@@ -44,8 +44,15 @@ export default {
       }
       const { id } = req.params;
       const employQuery = await Employee.findById(id);
-      value.departments.push(employQuery.departments.toString());
-      
+      var departmentIds = employQuery.departments.toString();
+      var departmentIdsArray = departmentIds.split(",");
+      console.log(departmentIdsArray.length);
+      for (var i = 0; i < value.departments.length; i++) {
+        if (departmentIdsArray.indexOf(value.departments[i]) == -1) {
+          departmentIdsArray.push(value.departments[i]);
+        }
+      }
+      value.departments = departmentIdsArray;
       const employee = await Employee.findOneAndUpdate({ _id: id }, value, { new: true });
 
       return res.json(employee);
