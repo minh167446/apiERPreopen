@@ -6,7 +6,6 @@ export default {
       fullname: Joi.string().required(),
       email: Joi.string().required(),
       phone: Joi.string().required(),
-      position: Joi.string().required(),
       manager: Joi.optional().allow(''),
       departments: Joi.array()
         .items()

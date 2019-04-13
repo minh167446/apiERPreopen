@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate';
+
 
 const { Schema } = mongoose;
 const employeeSchema = new Schema({
@@ -20,10 +22,6 @@ const employeeSchema = new Schema({
   manager: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
-  },
-  position: {
-    type: String,
-    required: [true, 'Employee must enter his position!']
   },
   salary: {
     type: String
@@ -50,4 +48,5 @@ const employeeSchema = new Schema({
     required: true,
   },
 });
+employeeSchema.plugin(mongoosePaginate);
 export default mongoose.model('Employee', employeeSchema);

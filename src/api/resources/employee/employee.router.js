@@ -9,9 +9,11 @@ export const employeeRouter = express.Router();
 const rootPolicy = [passport.authenticate('jwt', { session: false }), isRoot];
 employeeRouter
   .route('/')
-  .post(rootPolicy, employeeController.create)
-  .get(passport.authenticate('jwt', { session: false }), employeeController.findAll);
+  .get(passport.authenticate('jwt', { session: false }), employeeController.findAll)
+  .post(rootPolicy, employeeController.create);
+  
 
 employeeRouter
   .route('/:id')
+  .get(passport.authenticate('jwt', { session: false }), employeeController.findOne)
   .put(rootPolicy, employeeController.update);

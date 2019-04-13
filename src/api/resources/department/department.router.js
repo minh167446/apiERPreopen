@@ -13,7 +13,7 @@ departmentRouter
   .post(rootPolicy, departmentController.create)
   .get(passport.authenticate('jwt', { session: false }), departmentController.findAll);
 
-  departmentRouter
+departmentRouter
   .route('/:id')
   .get(passport.authenticate('jwt', { session: false }), departmentController.findOne)
   .delete(rootPolicy, departmentController.delete)

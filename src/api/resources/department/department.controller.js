@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import Department from './department.model';
-
+import Employee from '../employee/';
 export default {
   async create(req, res) {
     try {
@@ -49,7 +49,7 @@ export default {
     try {
       const { id } = req.params;
       const department = await Department.findById(id).populate('employees', 'id fullname');
-
+        
       if (!department) {
         return res.status(404).json({ err: 'could not find department' });
       }
