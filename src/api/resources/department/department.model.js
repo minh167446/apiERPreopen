@@ -18,7 +18,12 @@ const departmentSchema = new Schema({
   employees: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
-  }]
+  }],
+  parent_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Department',
+      default: null
+    },
 });
 departmentSchema.plugin(mongoosePaginate);
 export default mongoose.model('Department', departmentSchema);

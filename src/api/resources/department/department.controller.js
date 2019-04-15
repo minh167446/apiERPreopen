@@ -8,7 +8,8 @@ export default {
         title: Joi.string().required(),
         description: Joi.string().required(),
         location: Joi.string().required(),
-        employees: Joi.array().items()
+        employees: Joi.array().items(),
+        parent_id: Joi.string().optional().allow('')
       });
       const { value, error } = Joi.validate(req.body, schema);
       if (error && error.details) {
@@ -18,7 +19,8 @@ export default {
         title: value.title,
         description: value.description,
         location: value.location,
-        employees: value.employe
+        employees: value.employe,
+        parent_id: value.parent_id || null
       });
       return res.json(department);
     } catch (err) {
@@ -31,13 +33,17 @@ export default {
       const { page, perPage } = req.query;
       const options = {
         page: parseInt(page, 10) || 1,
-        limit: parseInt(perPage, 10) || 10,
-        populate: {
+        limit: parseInt(perPage, 10) || 100,
+        populate: [{
           path: 'employees',
           select: 'fullname email phone',
-        },
+        }],
       };
       const departments = await Department.paginate({}, options);
+      for (var i = 0; i < departments.docs.length; i++) {
+        var childs = await Department.find({parent_id: departments.docs[i]._id}).select("title");
+        departments.docs[i]._doc.childs = childs;
+      }
       return res.json(departments);
     } catch (err) {
       console.error(err);
@@ -49,7 +55,7 @@ export default {
     try {
       const { id } = req.params;
       const department = await Department.findById(id).populate('employees', 'id fullname');
-        
+
       if (!department) {
         return res.status(404).json({ err: 'could not find department' });
       }

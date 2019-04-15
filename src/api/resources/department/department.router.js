@@ -7,14 +7,14 @@ export const departmentRouter = express.Router();
 // 1.authenticated user can view all the department
 // 2.an root(admin) can create, update, and delete department
 
-const rootPolicy = [passport.authenticate('jwt', { session: false }), isRoot];
+// const rootPolicy = [isRoot];
 departmentRouter
   .route('/')
-  .post(rootPolicy, departmentController.create)
-  .get(passport.authenticate('jwt', { session: false }), departmentController.findAll);
+  .post(departmentController.create)
+  .get(departmentController.findAll);
 
 departmentRouter
   .route('/:id')
-  .get(passport.authenticate('jwt', { session: false }), departmentController.findOne)
-  .delete(rootPolicy, departmentController.delete)
-  .put(rootPolicy, departmentController.update);
+  .get(departmentController.findOne)
+  .delete(departmentController.delete)
+  .put(departmentController.update);
