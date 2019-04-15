@@ -10,14 +10,14 @@ export default {
       if (error && error.details) {
         return res.json(error);
       }
-      const employee = await Employee.create(Object.assign({}, value, { user_create: req.user._id }));
+      const employee = await Employee.create(Object.assign({}, value));
       for (var i = 0; i < value.departments.length; i++) {
         var department = await Department.findById(value.departments[i]);
         var employeesIds = [];
         for (var j = 0; j < department.employees.length; j++) {
           if (value.departments.indexOf(department.employees[j]._id.toString()) == -1) {
             employeesIds.push(department.employees[j]._id.toString());
-          }          
+          }
         }
         employeesIds.push(employee._id);
         await Department.findOneAndUpdate({ _id: value.departments[i] }, {'employees': employeesIds}, {new: false});
@@ -42,7 +42,7 @@ export default {
       return res.status(500).send(err);
     }
   },
-async findAll(req, res) { 
+async findAll(req, res) {
   try{
     const { page, perPage } = req.query;
     const options = {
@@ -55,7 +55,7 @@ async findAll(req, res) {
       },
   }
       const employees = await Employee.paginate({}, options);
-      return res.json(employees);  
+      return res.json(employees);
     } catch (err) {
       console.error(err);
       return res.status(500).send(err);
@@ -75,12 +75,12 @@ async findAll(req, res) {
       if (error && error.details) {
         return res.json(error);
       }
-      const employQuery = await Employee.findById(id);      
+      const employQuery = await Employee.findById(id);
       var departmentIds = employQuery.departments.toString();
-      var departmentIdsArray = [];      
+      var departmentIdsArray = [];
       if (departmentIds != "") {
         departmentIdsArray = departmentIds.split(",");
-      }      
+      }
       for (var i = 0; i < value.departments.length; i++) {
         if (departmentIdsArray.indexOf(value.departments[i]) == -1) {
           departmentIdsArray.push(value.departments[i]);
@@ -90,10 +90,10 @@ async findAll(req, res) {
       value.departments = departmentIdsArray;
       const employee = await Employee.findOneAndUpdate({ _id: id }, value, { new: true });
       for (let i = 0; i < value.departments.length; i++) {
-        var departQuery = await Department.findById(value.departments[i]);  
-        if (departQuery.employees.indexOf(employee._id.toString()) == -1) {          
+        var departQuery = await Department.findById(value.departments[i]);
+        if (departQuery.employees.indexOf(employee._id.toString()) == -1) {
           departQuery.employees.push(employee._id.toString());
-        }                  
+        }
         await Department.findOneAndUpdate({ _id:  value.departments[i]}, departQuery, { new: true });
       }
       return res.json(employee);

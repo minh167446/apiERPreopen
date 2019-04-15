@@ -6,14 +6,14 @@ import { isRoot } from '../../middlewares/is-root';
 export const employeeRouter = express.Router();
 
 // 1.an root(admin) can create, update, and delete employee
-const rootPolicy = [passport.authenticate('jwt', { session: false }), isRoot];
+// const rootPolicy = [ isRoot];
 employeeRouter
   .route('/')
-  .get(passport.authenticate('jwt', { session: false }), employeeController.findAll)
-  .post(rootPolicy, employeeController.create);
-  
+  .get( employeeController.findAll)
+  .post( employeeController.create);
+
 
 employeeRouter
   .route('/:id')
-  .get(passport.authenticate('jwt', { session: false }), employeeController.findOne)
-  .put(rootPolicy, employeeController.update);
+  .get( employeeController.findOne)
+  .put( employeeController.update);

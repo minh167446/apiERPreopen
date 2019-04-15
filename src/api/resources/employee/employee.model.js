@@ -44,8 +44,7 @@ const employeeSchema = new Schema({
   ],
   user_create: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+    ref: 'User'
   },
 });
 employeeSchema.plugin(mongoosePaginate);
