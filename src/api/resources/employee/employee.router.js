@@ -12,6 +12,7 @@ employeeRouter
   .get( employeeController.findAll)
   .post( employeeController.create);
 
+employeeRouter.post('/login', employeeController.login);
 
 employeeRouter
   .route('/:id')

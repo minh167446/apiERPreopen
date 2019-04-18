@@ -48,4 +48,25 @@ export default {
   authenticate(req, res) {
     return res.json(req.user);
   },
+
+  async listAll(req, res) {
+    try {
+      const { page, perPage } = req.query;
+      const options = {
+        page: parseInt(page, 10) || 1,
+        limit: parseInt(perPage, 10) || 10,
+
+        populate: {
+          path: 'user',
+          select: 'email',
+        },
+      }
+      const users = await User.paginate({}, options);
+      // const users = await User.find();
+      return res.json({ users:users })
+    }catch (err) {
+      console.error(err);
+      return res.status(500).send(err);
+    }
+  }
 };

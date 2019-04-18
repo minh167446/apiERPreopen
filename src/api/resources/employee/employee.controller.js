@@ -2,6 +2,7 @@ import employeeService from './employee.service';
 import Employee from './employee.model';
 import Department from './../department/department.model';
 import Joi from 'joi';
+import jwt from '../../helpers/jwt';
 
 export default {
   async create(req, res) {
@@ -10,7 +11,12 @@ export default {
       if (error && error.details) {
         return res.json(error);
       }
-      const employee = await Employee.create(Object.assign({}, value));
+      const userId = "5cb88052680db419aa9d59b0";
+      value.user_create = userId;
+      const randomPassword = Math.floor(100000 + Math.random() * 900000);
+      console.log(randomPassword);
+      value.password = randomPassword;
+      const employee = await Employee.create(Object.assign({}, value, ));
       for (var i = 0; i < value.departments.length; i++) {
         var department = await Department.findById(value.departments[i]);
         var employeesIds = [];
@@ -31,17 +37,38 @@ export default {
   async findOne(req, res) {
     try {
       const { id } = req.params;
-      const department = await Employee.findById(id);
-
-      if (!department) {
-        return res.status(404).json({ err: 'could not find department' });
+      const emp = await Employee.findById(id);
+      if (!emp) {
+        return res.status(404).json({ err: 'could not find emp' });
       }
-      return res.json(department);
+      return res.json(emp);
     } catch (err) {
       console.error(err);
       return res.status(500).send(err);
     }
   },
+async login(req, res) {
+  try {
+    const { value, error } = employeeService.validateLogin(req.body);
+    if (error) {
+      return res.status(400).json(error);
+    }
+    const emp = await Employee.findOne({ email: value.email });
+    if (!emp) {
+      return res.status(401).json({ err: 'Email not register!' });
+    }
+    console.log(emp.password);
+    const authenticted = employeeService.comparePassword(value.password, emp.password);
+    if (!authenticted) {
+      return res.status(401).json({ err: 'Wrong password!' });
+    }
+    const token = jwt.issue({ id: emp._id }, '1d');
+    return res.json({ token });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(err);
+  }
+},
 async findAll(req, res) {
   try{
     const { page, perPage } = req.query;
@@ -53,7 +80,7 @@ async findAll(req, res) {
         path: 'departments',
         select: 'title',
       },
-  }
+    }
       const employees = await Employee.paginate({}, options);
       return res.json(employees);
     } catch (err) {

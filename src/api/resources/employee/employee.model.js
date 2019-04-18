@@ -13,7 +13,9 @@ const employeeSchema = new Schema({
     required: [true, 'Employee must real, we will mail password for you!'],
   },
   password: {
-    type: String
+    type: String,
+    required: [true, 'Need password for login'],
+    default: '',
   },
   phone: {
     type: String,
@@ -30,12 +32,6 @@ const employeeSchema = new Schema({
     type: Date,
     default: Date.now
   },
-   identify: [{
-    tax_number: String,
-    ID: String,
-    place_ID: String,
-    date_ID: String
-  }],
   departments: [
     {
       type: mongoose.Schema.Types.ObjectId,

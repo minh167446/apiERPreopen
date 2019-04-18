@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import mongoosePaginate from 'mongoose-paginate';
 export const STANDARD_ROLE = 2;
 export const ROOT_ROLE = 1;
 const { Schema } = mongoose;
@@ -27,5 +27,5 @@ const userSchema = new Schema({
     type: Number,
   },
 });
-
+userSchema.plugin(mongoosePaginate);
 export default mongoose.model('User', userSchema);
