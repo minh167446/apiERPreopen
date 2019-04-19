@@ -18,3 +18,5 @@ departmentRouter
   .get(departmentController.findOne)
   .delete(departmentController.delete)
   .put(departmentController.update);
+
+departmentRouter.post('/deleteEmployee', departmentController.deleteEmployee);

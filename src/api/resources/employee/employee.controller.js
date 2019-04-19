@@ -14,7 +14,6 @@ export default {
       const userId = "5cb88052680db419aa9d59b0";
       value.user_create = userId;
       const randomPassword = Math.floor(100000 + Math.random() * 900000);
-      console.log(randomPassword);
       value.password = randomPassword;
       const employee = await Employee.create(Object.assign({}, value, ));
       for (var i = 0; i < value.departments.length; i++) {

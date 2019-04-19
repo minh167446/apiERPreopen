@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import Department from './department.model';
-import Employee from '../employee/';
+import Employee from '../employee/employee.model';
 export default {
   async create(req, res) {
     try {
@@ -101,4 +101,32 @@ export default {
       return res.status(500).send(err);
     }
   },
+async deleteEmployee(req, res) {
+  try {
+    const departmentId = req.body.departmentId;
+    const employeeId = req.body.employeeId;
+    const department = await Department.findById(departmentId);
+    if (!department) {
+      return res.status(404).json({ err: 'could not find department' });
+    }
+    department.employees.splice(department.employees.indexOf(employeeId), 1);
+    const result = department.save();
+    if (!result) {
+      return res.status(404).json({ err: 'could not update department' });
+    }
+    const employee = await Employee.findById(employeeId);
+    if (!employee) {
+      return res.status(404).json({ err: 'could not find employee' });
+    }
+    employee.departments.splice(employee.departments.indexOf(departmentId), 1);
+    const empResult = employee.save();
+    if (!empResult) {
+      return res.status(404).json({ err: 'could not update emp' });
+    }
+    return res.json(department);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(err);
+  }
+},
 };
